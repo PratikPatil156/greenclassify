@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenClassify | Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="prediction-page">
+
+<header class="navbar">
+    <div class="logo">GreenClassify.com</div>
+    <nav>
+        <a href="/">About</a>
+        <a href="#contact">Contact</a>
+        <a href="/prediction" class="active">Prediction</a>
+    </nav>
+</header>
+
+<main class="prediction-container">
+    <div class="glass-card">
+        <h1>Vegetable <span>Classification</span></h1>
+        <div class="divider"></div>
+        
+        <p class="subtitle">Upload an image for AI deep learning analysis</p>
+
+        <form action="/predict" method="POST" enctype="multipart/form-data">
+            <div class="upload-group">
+                <input type="file" name="image" id="file-upload" hidden required>
+                <label for="file-upload" class="upload-btn">Choose Image</label>
+                <span id="file-name">No file chosen</span>
+            </div>
+            
+            <button type="submit" class="analyze-btn">Analyze Vegetable</button>
+        </form>
+
+        {% if label or pred %}
+        <div class="result-box">
+            <h3>Result: <span>{{ label if label else pred }}</span></h3>
+            {% if confidence %}
+                <p>Confidence: {{ confidence }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <p class="footer-tag">Classify your vegetable with GreenClassify.com</p>
+    </div>
+</main>
+
+<script>
+    // Updates the text label when a user selects a file
+    const fileInput = document.getElementById('file-upload');
+    const fileName = document.getElementById('file-name');
+    fileInput.addEventListener('change', () => {
+        fileName.textContent = fileInput.files[0] ? fileInput.files[0].name : "No file chosen";
+    });
+</script>
+
+</body>
+</html>

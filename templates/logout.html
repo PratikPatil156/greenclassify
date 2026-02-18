@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenClassify | Analysis Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="prediction-page">
+
+<header class="navbar">
+    <div class="logo">GreenClassify.com</div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/prediction" class="active">Prediction</a>
+    </nav>
+</header>
+
+<main class="prediction-container">
+    <div class="glass-card result-card">
+        <h1>Analysis <span>Complete</span></h1>
+        <div class="divider"></div>
+
+        <div class="image-preview-box">
+            <img src="{{ url_for('uploaded_file', filename=image_file) }}" 
+                 class="analyzed-image" alt="Uploaded Vegetable">
+        </div>
+
+        <div class="result-info">
+            <h2 class="result-label">Identified: <span>{{ label }}</span></h2>
+            
+            <div class="confidence-wrapper">
+                <p>Confidence Level: {{ confidence }}%</p>
+                <div class="progress-bar-bg">
+                    <div
+                        class="progress-bar-fill"
+                        role="progressbar"
+                        aria-label="Confidence"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow="{{ confidence }}"
+                        data-confidence="{{ confidence }}"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-btns">
+            <a href="/prediction" class="btn-try">New Prediction</a>
+            <a href="/" class="btn-home">Back to Home</a>
+        </div>
+
+        <p class="footer-tag">Model Architecture: CNN | Epochs: 3</p>
+    </div>
+</main>
+
+<script>
+    // Set progress bar width via JS to avoid CSS parsing errors from Jinja "}}" in inline styles.
+    (function () {
+        var el = document.querySelector('.progress-bar-fill');
+        if (!el) return;
+
+        var raw = el.getAttribute('data-confidence');
+        var value = Number.parseFloat(raw);
+        if (!Number.isFinite(value)) value = 0;
+        value = Math.max(0, Math.min(100, value));
+
+        el.style.width = value + '%';
+        el.setAttribute('aria-valuenow', String(value));
+    })();
+</script>
+ 
+</body>
+</html>
