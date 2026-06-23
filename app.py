@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, jsonify
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 MODEL_PATH = "models/vegetable_model.h5"
 IMG_HEIGHT = 128
@@ -17,7 +19,8 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 model = tf.keras.models.load_model(MODEL_PATH)
 
 # Class names (from training folders)
-class_names = sorted(os.listdir("code/Vegetable Images/train"))
+
+class_names = sorted(os.listdir("code/Vegetable_Images/train"))
 
 @app.route('/')
 def home():
@@ -61,6 +64,47 @@ def predict():
         )
 
     return "No image uploaded"
+
+@app.route('/api/predict', methods=['POST'])
+def api_predict():
+    if 'image' not in request.files:
+        return jsonify({"error": "No image part"}), 400
+        
+    file = request.files['image']
+
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    if file:
+        filename = file.filename
+        image_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        file.save(image_path)
+
+        try:
+            # Preprocess image
+            img = load_img(image_path, target_size=(IMG_HEIGHT, IMG_WIDTH))
+            img_array = img_to_array(img) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
+
+            # Predict
+            predictions = model.predict(img_array)
+            class_index = np.argmax(predictions)
+            confidence = float(np.max(predictions)) * 100
+
+            label = class_names[class_index]
+            
+            # Construct absolute URL for the image
+            image_url = request.host_url + 'uploads/' + filename
+
+            return jsonify({
+                "label": label,
+                "confidence": round(confidence, 2),
+                "image_url": image_url
+            })
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    return jsonify({"error": "Unknown error occurred"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

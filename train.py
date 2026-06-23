@@ -1,25 +1,30 @@
+
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
+import os
 
 # Dataset paths
-TRAIN_DIR = "code/Vegetable Images/train"
-VAL_DIR = "code/Vegetable Images/validation"
+TRAIN_DIR = r"code/Vegetable_Images/train"
+VAL_DIR = r"code/Vegetable_Images/validation"
 
-# Image parameters (FAST)
+# Image parameters
 IMG_HEIGHT = 128
 IMG_WIDTH = 128
-BATCH_SIZE = 32
-EPOCHS = 3
+BATCH_SIZE = 4 
 
-# Data preprocessing
+# Data preprocessing with Augmentation
 train_datagen = ImageDataGenerator(
     rescale=1./255,
-    zoom_range=0.2,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
     shear_range=0.2,
-    horizontal_flip=True
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest'
 )
 
 val_datagen = ImageDataGenerator(rescale=1./255)
@@ -38,20 +43,20 @@ val_data = val_datagen.flow_from_directory(
     class_mode='categorical'
 )
 
-# CNN Model (FIXED)
+# CNN Model (Added Dropout to prevent overfitting)
 model = Sequential([
-    Conv2D(16, (3,3), activation='relu',
-           input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
-    MaxPooling2D(2,2),
-
-    Conv2D(32, (3,3), activation='relu'),
+    Conv2D(32, (3,3), activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
     MaxPooling2D(2,2),
 
     Conv2D(64, (3,3), activation='relu'),
     MaxPooling2D(2,2),
 
+    Conv2D(128, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+
     Flatten(),
     Dense(128, activation='relu'),
+    Dropout(0.5), # Overfitting rokne ke liye
     Dense(train_data.num_classes, activation='softmax')
 ])
 
@@ -61,16 +66,16 @@ model.compile(
     metrics=['accuracy']
 )
 
-# Train model (FASTER)
+# Train model (Removed steps_per_epoch for smaller datasets)
 model.fit(
     train_data,
     validation_data=val_data,
-    epochs=EPOCHS,
-    steps_per_epoch=100,
-    validation_steps=20
+    epochs=15 # Thode zyaada epochs taaki model seekh sake
 )
 
 # Save model
+if not os.path.exists('models'):
+    os.makedirs('models')
 model.save("models/vegetable_model.h5")
 
 print("✅ Model trained and saved successfully!")
