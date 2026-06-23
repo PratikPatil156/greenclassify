@@ -290,7 +290,7 @@ function App() {
               <span className="logo-text" style={{ fontSize: '1.25rem' }}>GreenClassify</span>
             </div>
             <div className="footer-links">
-              <a href="#" className="footer-link">
+              <a href="https://github.com/PratikPatil156/greenclassify" target="_blank" rel="noopener noreferrer" className="footer-link">
                 <Code size={18} />
                 <span>GitHub</span>
               </a>
