@@ -1,64 +1,65 @@
-﻿# GreenClassify 🌿
+# GreenClassify
 
-GreenClassify is a modern, AI-powered web application that instantly identifies various types of vegetables from images using deep learning. It features a beautiful, glassmorphism-inspired React frontend backed by a fast Flask REST API.
+GreenClassify is a web-based image classification tool that identifies vegetables using deep learning. The project consists of a Python Flask backend serving a trained Convolutional Neural Network (CNN) model and a responsive React frontend styled with a modern dark interface.
 
-## 🚀 Features
+## Features
+- **Instant Classification:** Detects vegetables from uploaded images with confidence scores.
+- **Modern UI:** Dark mode dashboard built with React, featuring drag-and-drop uploads and scanning animations.
+- **Lightweight Backend:** Flask REST API handles image processing and TensorFlow model inference.
 
-- **High Accuracy AI:** Uses a state-of-the-art Convolutional Neural Network (CNN) built with TensorFlow/Keras to accurately classify vegetables.
-- **Modern UI/UX:** A stunning, fully responsive React frontend with fluid animations, glowing effects, and a premium dark theme.
-- **Instant Results:** Simply drag and drop (or upload) an image to see real-time predictions along with confidence scores.
-- **Decoupled Architecture:** Clean separation between the React frontend and the Python backend for easy maintenance and scaling.
+## Supported Vegetables
+Currently, the model is trained to classify:
+- Potatoes 🥔
+- Tomatoes 🍅
 
-## 🛠️ Tech Stack
+## Project Structure
+```
+greenclassify/
+├── frontend/             # React application (Vite)
+│   ├── src/              # UI components and styles
+│   └── index.html
+├── app.py                # Flask API server
+├── train.py              # Model training script
+├── models/               # Saved TensorFlow model (.h5)
+└── requirements.txt      # Python dependencies
+```
 
-- **Frontend:** React (Vite), JavaScript, Vanilla CSS, Lucide React (Icons)
-- **Backend:** Python, Flask, Flask-CORS
-- **Machine Learning:** TensorFlow, Keras, NumPy, Pillow
+## Getting Started
 
----
+### Prerequisites
+- Python 3.8+
+- Node.js (v18 or higher)
+- npm
 
-## 💻 Getting Started
+### Installation & Setup
 
-Follow these steps to run the project locally on your machine.
-
-### 1. Run the Backend (Flask API)
-
-Open a terminal and navigate to the root directory of the project.
-
-`ash
-# Install the required Python dependencies
+#### 1. Backend Setup
+Run the backend server from the project root directory:
+```bash
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Start the Flask server
+# Start the Flask API
 python app.py
-`
-*The backend server will run on http://localhost:5000*
+```
+*The Flask server runs on `http://localhost:5000`.*
 
-### 2. Run the Frontend (React App)
-
-Open a **new** terminal and navigate to the frontend folder.
-
-`ash
-# Move into the frontend directory
+#### 2. Frontend Setup
+Run the frontend development server from the `frontend` directory:
+```bash
+# Go to the frontend folder
 cd frontend
 
-# Install Node.js dependencies
+# Install Node packages
 npm install
 
 # Start the Vite development server
 npm run dev
-`
-*The frontend application will be available at http://localhost:5173*
+```
+*The React application will open on `http://localhost:5173`.*
 
----
-
-## 📸 Usage
-
-1. Open http://localhost:5173 in your web browser.
-2. Click the **Upload your image** zone or drag-and-drop a photo of a vegetable.
-3. Click the **Analyze Vegetable** button.
-4. The AI will process the image and display the predicted vegetable name along with its accuracy percentage!
-
-## 📄 License
-
-&copy; 2026 GreenClassify. All rights reserved.
+## Model Training
+If you want to retrain the classifier or expand the dataset, place your training images in `code/Vegetable_Images/` and run:
+```bash
+python train.py
+```
