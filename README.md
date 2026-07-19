@@ -12,18 +12,6 @@ Currently, the model is trained to classify:
 - Potatoes 🥔
 - Tomatoes 🍅
 
-## Project Structure
-```
-greenclassify/
-├── frontend/             # React application (Vite)
-│   ├── src/              # UI components and styles
-│   └── index.html
-├── app.py                # Flask API server
-├── train.py              # Model training script
-├── models/               # Saved TensorFlow model (.h5)
-└── requirements.txt      # Python dependencies
-```
-
 ## Getting Started
 
 ### Prerequisites
